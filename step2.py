@@ -16,8 +16,6 @@ y=y.reshape((y.shape[0],1))
 
 
 
-
-
 def initialisation(X):
     W = np.random.randn(X.shape[1],1)
     b = np.random.randn(1)
@@ -52,6 +50,7 @@ def update(W,b,dw,db,learning_rate):
 
 def predict(X,W,b):
     A = Model(X,W,b)
+    print("predict point==>",A)
     return A>=0.5
     
 
@@ -69,7 +68,7 @@ def artificial_neuron(X,y,learning_rate=0.1,nb_iteration = 100):
         W,b = update(W,b,dw,db,learning_rate)
         
     y_pred = predict(X,W,b)
-    print(f"{accuracy_score(y,y_pred)*100}%")
+    print(f"accuracy_score=>{accuracy_score(y,y_pred)*100}%")
         
     
     # plt.plot(loss)
@@ -78,20 +77,27 @@ def artificial_neuron(X,y,learning_rate=0.1,nb_iteration = 100):
     
     
 W,b = artificial_neuron(X,y) 
-print(W)
-print(b)   
+print("the best w=>",W)
+print("the best b=>",b)   
 
 
 
 
 
+#predict a new point 
+new_plant = np.array([1,1])
 
-new_plant = np.array([1,5])
+#tracer la frontiere de decision
+x0 = np.linspace(-1,4,100)
+x1 =(-W[0]*x0-b)/ W[1]
+
 plt.scatter(X[:,0] , X[:,1] ,c=y ,cmap='summer')
 plt.scatter(new_plant[0] , new_plant[1] , c='r')
+#tracer la frontiere de decision
+plt.plot(x0,x1,c='b',lw=3)
 plt.show()
 a = predict(new_plant,W,b)
-print(a)
+print("the predict of the new point =>",a)
 
 
 
