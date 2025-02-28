@@ -36,20 +36,33 @@ X = [[1,2,3,2.5],
 
 
 
+
 class Layer_Dense:
     def __init__(self,n_inputs,n_neurons): 
         self.weights = 0.10*np.random.rand(n_inputs,n_neurons)
         self.biases = np.zeros((1 , n_neurons))
+        
+        
+    def activation_function(self,output):
+         return np.maximum(0,output)
+     
+     
     def forward(self,inputs):
         self.outputs = np.dot(inputs , self.weights) + self.biases
         
+        return self.activation_function(self.outputs)
+    
+   
         
 layer1 = Layer_Dense(4,5)    
-layer2 = Layer_Dense(5,2)
+# layer2 = Layer_Dense(5,2)
 
-layer1.forward(X)
-layer2.forward(layer1.outputs)
+var = layer1.forward(X)
+# layer2.forward(layer1.outputs)
+print(var)
 print(layer1.outputs)
-print(layer2.outputs)
+# print(layer2.outputs)
+
+
 
     
