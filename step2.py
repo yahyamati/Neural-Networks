@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import make_blobs
+from sklearn.metrics import accuracy_score
 
 
 X,y = make_blobs(n_samples = 100,n_features = 2,centers = 2 , random_state=0)
@@ -11,6 +12,9 @@ y=y.reshape((y.shape[0],1))
 
 # plt.scatter(X[:,0] , X[:,1] ,c=y ,cmap='summer')
 # plt.show()
+
+
+
 
 
 
@@ -46,28 +50,48 @@ def update(W,b,dw,db,learning_rate):
 
 
 
+def predict(X,W,b):
+    A = Model(X,W,b)
+    return A>=0.5
+    
 
-def articial_neuron(X,y,learning_rate=0.1,nb_iteration = 100):
+
+def artificial_neuron(X,y,learning_rate=0.1,nb_iteration = 100):
     #initialisation
     W,b = initialisation(X)
     
     loss = []
     for i in range(nb_iteration):
-    
         A = Model(X,W,b)
         loss.append(log_loss(A,y))
         dw,db =gradient(A,X,y)
         #update
         W,b = update(W,b,dw,db,learning_rate)
         
+    y_pred = predict(X,W,b)
+    print(f"{accuracy_score(y,y_pred)*100}%")
+        
     
-    plt.plot(loss)
-    plt.show()
+    # plt.plot(loss)
+    # plt.show()
+    return (W,b)
     
     
-articial_neuron(X,y)    
+W,b = artificial_neuron(X,y) 
+print(W)
+print(b)   
 
 
+
+
+
+
+new_plant = np.array([1,5])
+plt.scatter(X[:,0] , X[:,1] ,c=y ,cmap='summer')
+plt.scatter(new_plant[0] , new_plant[1] , c='r')
+plt.show()
+a = predict(new_plant,W,b)
+print(a)
 
 
 
