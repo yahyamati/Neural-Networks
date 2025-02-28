@@ -6,10 +6,10 @@ from sklearn.datasets import make_blobs
 X,y = make_blobs(n_samples = 100,n_features = 2,centers = 2 , random_state=0)
 y=y.reshape((y.shape[0],1))
 
-print('demension de X',X.shape)
-print('demension de y',y.shape)
+# print('demension de X',X.shape)
+# print('demension de y',y.shape)
 
-plt.scatter(X[:,0] , X[:,1] ,c=y ,cmap='summer')
+# plt.scatter(X[:,0] , X[:,1] ,c=y ,cmap='summer')
 # plt.show()
 
 
@@ -38,12 +38,36 @@ def gradient(A,X,y):
     return (dw , db)
 
 
+def update(W,b,dw,db,learning_rate):
+    W = W - learning_rate * dw
+    b = b - learning_rate * db
+    
+    return (W,b)
 
-W,b = initialisation(X)
-A=Model(X,W,b)
-L = log_loss(A,y)
-# print(A)
-# print(L)
-dw ,db = gradient(A,X,y)
-print(dw)
-print(db)
+
+
+
+def articial_neuron(X,y,learning_rate=0.1,nb_iteration = 100):
+    #initialisation
+    W,b = initialisation(X)
+    
+    loss = []
+    for i in range(nb_iteration):
+    
+        A = Model(X,W,b)
+        loss.append(log_loss(A,y))
+        dw,db =gradient(A,X,y)
+        #update
+        W,b = update(W,b,dw,db,learning_rate)
+        
+    
+    plt.plot(loss)
+    plt.show()
+    
+    
+articial_neuron(X,y)    
+
+
+
+
+
