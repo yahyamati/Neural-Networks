@@ -4,8 +4,10 @@ from sklearn.datasets import make_blobs
 from sklearn.metrics import accuracy_score
 
 
-X,y = make_blobs(n_samples = 100,n_features = 2,centers = 2 , random_state=0)
+
+X,y = make_blobs(n_samples = 100,n_features = 5,centers = 2 , random_state=0)
 y=y.reshape((y.shape[0],1))
+
 
 # print('demension de X',X.shape)
 # print('demension de y',y.shape)
@@ -85,7 +87,7 @@ print("the best b=>",b)
 
 
 #predict a new point 
-new_plant = np.array([1,1])
+new_plant = np.array([1,1,1,2,3])
 
 #tracer la frontiere de decision
 x0 = np.linspace(-1,4,100)
@@ -98,6 +100,10 @@ plt.plot(x0,x1,c='b',lw=3)
 plt.show()
 a = predict(new_plant,W,b)
 print("the predict of the new point =>",a)
+
+
+
+
 
 
 
