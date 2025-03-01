@@ -114,20 +114,19 @@ print("the best b=>",b)
 
 
 
-# #predict a new point 
-# new_plant = np.array([1,1,1,2,3])
+#predict a new point 
+y_pred_test = predict(X_test, W, b)
 
-# #tracer la frontiere de decision
-# x0 = np.linspace(-1,4,100)
-# x1 =(-W[0]*x0-b)/ W[1]
+#tracer la frontiere de decision
+x0 = np.linspace(-1, 4, 100)  # X-axis range
+x1 = (-W[0] * x0 - b) / W[1]  # Decision boundary equation
 
-# plt.scatter(X[:,0] , X[:,1] ,c=y ,cmap='summer')
-# plt.scatter(new_plant[0] , new_plant[1] , c='r')
-# #tracer la frontiere de decision
-# plt.plot(x0,x1,c='b',lw=3)
-# plt.show()
-# a = predict(new_plant,W,b)
-# print("the predict of the new point =>",a)
+plt.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap='summer', label="Train Data")
+plt.scatter(X_test[:, 0], X_test[:, 1], c=y_pred_test, cmap='coolwarm', marker='s', label="Test Predictions")
+plt.plot(x0, x1, c='b', lw=3, label="Decision Boundary")
+plt.legend()
+plt.show()
+
 
 
 
