@@ -73,8 +73,8 @@ def artificial_neuron(X,y,learning_rate=0.1,nb_iteration = 100):
     print(f"accuracy_score=>{accuracy_score(y,y_pred)*100}%")
         
     
-    # plt.plot(loss)
-    # plt.show()
+    plt.plot(loss)
+    plt.show()
     return (W,b)
     
     

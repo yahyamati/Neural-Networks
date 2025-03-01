@@ -4,30 +4,49 @@ import matplotlib.pyplot as plt
 from sklearn.datasets import make_blobs
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import log_loss
+from tqdm import tqdm
 
 
 X_train , y_train , X_test , y_test = load_data()
 
-#normalize the train and test sets (scaling pixel values from 0-255 to 0-1)
-X_train = X_train / 255.0
-X_test = X_test / 255.0
 
-print("Train set min:", X_train.min(), "max:", X_train.max())
-print("Test set min:", X_test.min(), "max:", X_test.max())
 
+print("X_train shape before reshape:", X_train.shape)
+print("X_test shape before reshape:", X_test.shape)
 
 
 X_train = X_train.reshape(X_train.shape[0], -1)  # Shape (num_samples, 4096)
 X_test = X_test.reshape(X_test.shape[0], -1)  # Shape (num_samples, 4096)
 
-print("X_train shape after flattening:", X_train.shape)
-print("X_test shape after flattening:", X_test.shape)
+print("X_train shape after reshape:", X_train.shape)
+print("X_test shape after reshape:", X_test.shape)
+
+#//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-y_train =y_train.flatten()
-y_test = y_test.flatten()
-print("y_train shape after flattening:", y_train.shape)
-print("y_test shape after flattening:", y_test.shape)
+print("Train set before normalizing=> min:", X_train.min(), "max:", X_train.max())
+print("Test set before normalizing=> min:", X_test.min(), "max:", X_test.max()) 
+
+#normalize the train and test sets (scaling pixel values from 0-255 to 0-1)
+X_train = X_train / X_train.max() # /255
+X_test = X_test / X_test.max() # /255
+
+print("Train set after normalizing=> min:", X_train.min(), "max:", X_train.max())
+print("Test set after normalizing=> min:", X_test.min(), "max:", X_test.max()) 
+
+#//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+# print("y_train shape before flattening:", y_train.shape)
+# print("y_test shape before flattening:", y_test.shape)
+# y_train =y_train.flatten()
+# y_test = y_test.flatten()
+# print("y_train shape after flattening:", y_train.shape)
+# print("y_test shape after flattening:", y_test.shape)
+
+
+#//////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 # plt.figure(figsize=(16,8))
 # for i in range(1,10):
@@ -73,35 +92,46 @@ def update(W,b,dw,db,learning_rate):
 
 def predict(X_train,W,b):
     A = Model(X_train,W,b)
-    print("predict point==>",A)
+    # print("predict point==>",A)
     return A>=0.5
     
 
 
-def artificial_neuron(X_train,y_train,learning_rate=0.1,nb_iteration = 1000):
-    y_train = y_train.reshape(-1, 1)
+def artificial_neuron(X_train,y_train,learning_rate=0.01,nb_iteration = 10000):
+    # y_train = y_train.reshape(-1, 1)
     #initialisation
     W,b = initialisation(X_train)
     
     loss = []
-    for i in range(nb_iteration):
+    acc= []
+    for i in tqdm(range(nb_iteration)):
         A = Model(X_train,W,b)
+        # print("A==>",A.shape)
+        # print("y_train==>",y_train.shape)
         
-        print("A==>",A.shape)
-        print("y_train==>",y_train.shape)
-        loss.append(log_loss(y_train, A))
-        dw,db =gradient(A,X_train,y_train)
+        if i%10==0:
+            #calcul du cout
+            loss.append(log_loss(y_train, A ))
+            
+            #calcul de l'accuracy
+            y_pred = predict(X_train,W,b)
+            acc.append(accuracy_score(y_train,y_pred))
+            # print(f"accuracy_score=>{acc*100}%")
+        
         #update
+        dw,db =gradient(A,X_train,y_train)
         W,b = update(W,b,dw,db,learning_rate)
         
-    y_pred = predict(X_train,W,b)
-    print(f"accuracy_score=>{accuracy_score(y_train,y_pred)*100}%")
         
-    
+        
+    plt.figure(figsize=(12,4))
+    plt.subplot(1,2,1)
     plt.plot(loss)
-    plt.xlabel("Iterations")
-    plt.ylabel("Log Loss")
-    plt.title("Loss Curve")
+    plt.subplot(1,2,2)
+    plt.plot(acc)
+    # plt.xlabel("Iterations")
+    # plt.ylabel("Log Loss")
+    # plt.title("Loss Curve")
     plt.show()
     return (W,b)
     
@@ -114,18 +144,18 @@ print("the best b=>",b)
 
 
 
-#predict a new point 
-y_pred_test = predict(X_test, W, b)
+# #predict a new point 
+# y_pred_test = predict(X_test, W, b)
 
-#tracer la frontiere de decision
-x0 = np.linspace(-1, 4, 100)  # X-axis range
-x1 = (-W[0] * x0 - b) / W[1]  # Decision boundary equation
+# #tracer la frontiere de decision
+# x0 = np.linspace(-1, 4, 100)  # X-axis range
+# x1 = (-W[0] * x0 - b) / W[1]  # Decision boundary equation
 
-plt.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap='summer', label="Train Data")
-plt.scatter(X_test[:, 0], X_test[:, 1], c=y_pred_test, cmap='coolwarm', marker='s', label="Test Predictions")
-plt.plot(x0, x1, c='b', lw=3, label="Decision Boundary")
-plt.legend()
-plt.show()
+# plt.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap='summer', label="Train Data")
+# plt.scatter(X_test[:, 0], X_test[:, 1], c=y_pred_test, cmap='coolwarm', marker='s', label="Test Predictions")
+# plt.plot(x0, x1, c='b', lw=3, label="Decision Boundary")
+# plt.legend()
+# plt.show()
 
 
 
