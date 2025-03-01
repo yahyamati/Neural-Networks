@@ -97,26 +97,37 @@ def predict(X_train,W,b):
     
 
 
-def artificial_neuron(X_train,y_train,learning_rate=0.01,nb_iteration = 10000):
+def artificial_neuron(X_train,y_train,X_test,y_test,learning_rate=0.01,nb_iteration = 10000):
     # y_train = y_train.reshape(-1, 1)
     #initialisation
     W,b = initialisation(X_train)
     
-    loss = []
-    acc= []
+    train_loss = []
+    train_acc= []
+    
+    test_loss=[]
+    test_acc= []
     for i in tqdm(range(nb_iteration)):
         A = Model(X_train,W,b)
         # print("A==>",A.shape)
         # print("y_train==>",y_train.shape)
         
         if i%10==0:
-            #calcul du cout
-            loss.append(log_loss(y_train, A ))
-            
+            #Train
+            train_loss.append(log_loss(y_train, A ))
             #calcul de l'accuracy
             y_pred = predict(X_train,W,b)
-            acc.append(accuracy_score(y_train,y_pred))
-            # print(f"accuracy_score=>{acc*100}%")
+            train_acc.append(accuracy_score(y_train,y_pred))
+            
+            
+            #Test
+            A_test = Model(X_test,W,b)
+            test_loss.append(log_loss(y_test, A_test))
+            #calcul de l'accuracy
+            y_pred = predict(X_test,W,b)
+            test_acc.append(accuracy_score(y_test,y_pred))
+            
+            
         
         #update
         dw,db =gradient(A,X_train,y_train)
@@ -126,17 +137,18 @@ def artificial_neuron(X_train,y_train,learning_rate=0.01,nb_iteration = 10000):
         
     plt.figure(figsize=(12,4))
     plt.subplot(1,2,1)
-    plt.plot(loss)
+    plt.plot(train_loss ,label='train loss')
+    plt.plot(test_loss, label='test loss')
+    plt.legend()
     plt.subplot(1,2,2)
-    plt.plot(acc)
-    # plt.xlabel("Iterations")
-    # plt.ylabel("Log Loss")
-    # plt.title("Loss Curve")
+    plt.plot(train_acc ,label='train acc')
+    plt.plot(test_acc, label='test acc')
+    plt.legend()
     plt.show()
     return (W,b)
     
     
-W,b = artificial_neuron(X_train,y_train) 
+W,b = artificial_neuron(X_train,y_train,X_test,y_test) 
 print("the best w=>",W)
 print("the best b=>",b)   
 
